@@ -1,0 +1,81 @@
+Miniprojeto 1: Relogio Despertador com Arduino e placa multifunção
+
+Aluno: Leandro Morgado
+Matricula: 1212042
+
+
+* Itens:
+
+B1. Botao A1
+
+	- click para up.
+	- hold para "soneca".
+
+B2. Botao A2
+
+	- click para down.
+	- hold para "soneca.
+
+B3. Botao A3
+
+	- click para ajuste.
+	- hold para on/off alarme.
+
+L1. Led D1
+
+	- aceso indica display hora.
+
+L2. Led D2
+
+	- aceso indica display alarme.
+
+L3. Led D3
+
+	- aceso indica ajuste hora/minuto.
+
+L4. Led D4
+
+	- piscando indica alarme ligado
+
+BZ. Buzzer
+
+	- tocando indica alarme disparando
+
+D. Display
+
+	- os 2 digitos mais significativos indicam as horas.
+	- os 2 digitos menos significativos indicam os minutos.
+
+
+* Funcoes do relogio despertador:
+
+F1. Navegar entre os displays hora e alarme (menu)
+
+	- Com o seletor hora/minuto desligado (nao click 
+	  no botao A3, led D3 apagado), use os botoes A1 (up) 
+	  e A2 (down) para navegar. Led 1 aceso (display hora) 
+	  e led 2 aceso (display alarme).
+
+F2. Ajustar hora
+
+	- No display hora (led 1 aceso), click no botao A3 (led 3 acende) 
+	  para selecionar os digitos horas. Use os botoes A1(up) 
+	  e A2(down) para os ajustes. Em seguida, click novamente 
+	  no seletor A3 para acertar os minutos. Use os botoes A1(up) e
+	  A2(down) para os ajustes. Por fim, click em A3 para confirmar
+	  as mudancas, retornando ao menu principal (led 3 ira apagar).
+
+F3. Ajustar alarme
+
+	- No display alarme (led 2 aceso), repita o processo anterior.
+
+F4. Ativar/desativar alarme
+
+	- Segure o botao seletor A3 por 2 segundos ou mais
+	  para ativar/desativar o alarme.
+
+F4. Colocar o alarme em "soneca"
+
+	- Quando o alarme disparar (buzzer tocando),
+	  pressione um dos botoes A1 (up) ou A2 (down) por 2 segundos 
+	  ou mais para adiar o alarme por 10 segundos.

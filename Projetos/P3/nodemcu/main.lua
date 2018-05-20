@@ -1,6 +1,6 @@
 sw1 = 1
 gpio.mode(sw1, gpio.INT, gpio.PULLUP)
-
+_G.clicked = false
 -----------------
 function handle_mqtt_error(client, reason)
   print("failed reason: "..reason)
@@ -23,8 +23,8 @@ end
 -------------
 
 wificonf = {
-  ssid = "nome-rede",
-  pwd = "senha-rede",
+  ssid = "minhaRede",
+  pwd = "minhaSenha",
   got_ip_cb = function (iptable) print ("ip: ".. iptable.IP) end,
   save = false
 }
@@ -57,9 +57,12 @@ function configMyWiFi()
 end
 
 local function getLocation(level, timestamp)
-  print("Geting location .. wait .. wait")
-  _G.channel = "ch/1"
-  dofile("geolocation.lua")
+  if not _G.clicked then
+    print("Geting location .. wait .. wait")
+    _G.channel = "ch/1"
+    dofile("geolocation.lua")
+    _G.clicked = true
+  end
 end
 
 gpio.trig(sw1, "down", getLocation)

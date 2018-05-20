@@ -1,4 +1,5 @@
-function tableToString(t)    
+function tableToString(t)     
+  
   str = '{ "wifiPoints" : [ '      
   
   for i , obj in pairs(t) do        
@@ -19,6 +20,7 @@ function tableToString(t)
 end
 
 function listap(t)   
+  
   body = {}
   body["wifiAccessPoints"] = {}
     
@@ -36,9 +38,9 @@ function listap(t)
       if (code < 0) then
         print("HTTP request failed")
       else
-        print(code, data)
+        _G.client:publish(_G.channel, data, 0, 0, function(client) print("info sent!") end)
       end 
-    end)
+    end)  
 end
 
 wifi.sta.getap(1, listap)

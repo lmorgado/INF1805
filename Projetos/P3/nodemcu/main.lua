@@ -23,8 +23,8 @@ end
 -------------
 
 wificonf = {
-  ssid = "minhaRede",
-  pwd = "minhaSenha",
+  ssid = "nome-rede",
+  pwd = "senha-rede",
   got_ip_cb = function (iptable) print ("ip: ".. iptable.IP) end,
   save = false
 }

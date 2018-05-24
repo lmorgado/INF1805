@@ -38,7 +38,7 @@ function love.mousereleased( x, y, button, istouch )
 end
 function love.load()
   width , heigth = love.graphics.getDimensions()
-  mqtt_client = mqtt.client.create("test.mosquitto.org", 1883, response)
+  mqtt_client = mqtt.client.create("iot.eclipse.org", 1883, response)
   vButton = {}
   table.insert(vButton,Button:create(width/4, 7*heigth/12, 120, 30, "pedir coordenada",request,{"ch/2", "ch/3"}))
   table.insert(vButton,Button:create(width/2+20, heigth/3, 62, 30, "conectar",connect))

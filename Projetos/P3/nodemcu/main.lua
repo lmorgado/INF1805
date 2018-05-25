@@ -20,11 +20,11 @@ function mqtt_connected(client)
   client:subscribe("ch/2", 0, ch2_handler)
 end
 
--- Cliente nodemcu escutando no tópico "ch/2"
+-- Cliente nodemcu agora escutando o tópico "ch/2"
 function ch2_handler(client)
   print("@ NodeMCU listens on topic \"ch/2\"")
   print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-  -- Registrar função para receber a mensagem (string com info)
+  -- Registrar função para receber a mensagem (string com dados)
   client:on("message", msg_handler)
 end
 
@@ -51,8 +51,8 @@ function do_mqtt_connect()
   _G.client:connect("iot.eclipse.org", 1883, 0, mqtt_connected, handle_mqtt_error)
 end
 
--- Função (alarme, loop infinito) para conectar o nodemcu à rede wi-fi.
--- Cria o nodemcu mqtt cliente e o conecta ao servidor mqtt.
+-- Verificar conexão do nodemcu à rede wi-fi
+-- Cria o nodemcu mqtt cliente e o conectá-lo ao servidor mqtt.
 function checker()
   if wifi.sta.getip() == nil then
     timeWifiConnection = timeWifiConnection + 1
@@ -66,29 +66,29 @@ function checker()
     print("Gateway: ", gw)
     print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
     tmr.stop(0)
-    -- nodemcu cliente
+    -- criar nodemcu cliente
     _G.client = mqtt.Client("nodemcu-mqtt", 120)
     -- conectar o nodemcu ao mqtt
     do_mqtt_connect()
   end
 end
 
--- Início: conectar o nodemcu à rede e ao servidor mqtt
+-- Início: conectar o nodemcu à rede
 function configMyWiFi()
   wifi.setmode(wifi.STATION)
-	wifi.sta.config(wificonf)
-  -- alarme "id=0" até criar todas as conexões necessárias
+	-- conexão à rede wi-fi, "auto-connect" habilitado
+  wifi.sta.config(wificonf)
+  -- Ao garantir conexão à rede, conectar ao servidor mqtt (ver função "checker")
   tmr.alarm(0, 1000, 1, checker)
 end
 
--- Controla o clique do botão, impedindo o "hold"
+-- Controlar o clique do botão, impedindo o "hold" (múltiplos cliques)
 _G.clicked = false
 
--- Requisitar latitude e longitude
 -- Callback acionada no clique do botão 1
 local function getLocation(level, timestamp)
   if not _G.clicked then
-    -- tópico "ch/1", escutado pela interface love
+    -- tópico "ch/1" escutado pela interface love
     _G.channel = "ch/1"
     -- requisitar coordenadas
     dofile("geolocation.lua")

@@ -6,7 +6,7 @@ json = require "json"
 function response(topic, message)
   --insere a informacao recebida, em caso de erro ativa a notificacao de erro
   table = json.decode(message)
-  if(table["location"]["lat"] or table["location"]["lng"]) then
+  if(table["location"]["lat"]== 'error' or table["location"]["lng"]=='error') then
     if(topic == 'ch/1') then
       vError["info"].name = 'Cliente enviou erro'
     else

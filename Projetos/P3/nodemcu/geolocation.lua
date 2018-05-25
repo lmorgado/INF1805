@@ -27,12 +27,12 @@ end
 -- Requisitar geolocalização à Google API
 function getGeoFromWiFi()
   print("Requesting geoLocation .. .. ..")
-  -- Requisitar a geolocalização após 2 segundos
+  -- pedir a geolocalização após 2 segundos
   tmr.alarm(1, 2 * 1000, 0, 
     function()
       http.post("https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyBtoGhEwgnkJ0Dj5uiLv_WoEeth6QUlc0k", "Content-Type: application/json\r\n", json,  
         function(code, data)
-          -- Erro. Não se conseguiu a geolocalização
+          -- Erro. Não conseguiu a geolocalização
           if (code < 0) then 
             data = '{"location": {"lat": "error", "lng": "error"}}'      
             -- Enviar error à interface love
@@ -42,7 +42,7 @@ function getGeoFromWiFi()
                 print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
               end
             )
-          -- Sucesso. Geolocalização retornada.
+          -- Sucesso. Geolocalização retornada
           else
             -- Enviar Geolocalização à interface love
             _G.client:publish(_G.channel, data, 0, 0,
@@ -52,7 +52,7 @@ function getGeoFromWiFi()
               end
             )
           end
-          -- Reabilitar botão do nodemcu a uma nova requisição
+          -- Reabilitar botão do nodemcu
           _G.clicked = false
         end
       )
@@ -60,8 +60,8 @@ function getGeoFromWiFi()
   )
 end
 
--- Callback para a chamada "wifi.sta.getap(1, listap)"
--- Recebe uma tabela "t" com info sobre os pontos de wi-fi próximos
+-- Callback da chamada "wifi.sta.getap(1, listap)"
+-- Recebe uma tabela "t" com os pontos de wi-fi próximos
 function listap(t) 
   body = {}
   body["wifiAccessPoints"] = {}   

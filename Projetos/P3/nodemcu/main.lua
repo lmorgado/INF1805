@@ -48,7 +48,7 @@ function do_mqtt_connect()
   _G.client:connect("iot.eclipse.org", 1883, 0, mqtt_connected, handle_mqtt_error)
 end
 
--- Função (alarm, loop infinito) para conectar o nodemcu à rede wi-fi.
+-- Função (alarme, loop infinito) para conectar o nodemcu à rede wi-fi.
 -- Cria o nodemcu mqtt cliente e o conecta ao servidor mqtt.
 function checker()
   if wifi.sta.getip() == nil then
@@ -85,7 +85,7 @@ _G.clicked = false
 -- Callback acionada no clique do botão 1
 local function getLocation(level, timestamp)
   if not _G.clicked then
-    -- envivar info para o tópico "ch/1", escutado pela interface love
+    -- tópico "ch/1", escutado pela interface love
     _G.channel = "ch/1"
     -- requisitar coordenadas
     dofile("geolocation.lua")

@@ -78,7 +78,7 @@ function love.load()
   vConnect["connect"]=Button:create(width/2+20, heigth/3, 62, 30, "conectar",connect)
   vButton["connect"] = vConnect["connect"]
   vConnect["text"] = Label:create(width/4, heigth/3, 30, 200, "love-client")
-  --cria o vetor de componentes responsaveis pela informacao apos a conexao ser vem sucedida
+  --cria o vetor de componentes responsaveis pela informacao apos a conexao ser bem sucedida
   vInfo = {}
   vInfo["client"] = Label:create(width/2, 7*heigth/12, 30, 165, "Client: nil")
   vInfo["latitude"] = Label:create(width/2, 8*heigth/12, 30, 165, "Latitude: nil")

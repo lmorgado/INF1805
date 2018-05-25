@@ -38,8 +38,8 @@ end
 
 -- Configuração da rede de wi-fi
 wificonf = {
-  ssid = "Kelvin",
-  pwd = "23101988",
+  ssid = "minhaRede",
+  pwd = "minhaSenha",
   save = false
 }
 

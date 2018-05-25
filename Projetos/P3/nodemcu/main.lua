@@ -1,3 +1,6 @@
+--Caio Gonçalves Feiertag 1510590
+--Leandro Morgado 1212042
+
 -- Botão 1 do nodemcu
 sw1 = 1
 gpio.mode(sw1, gpio.INT, gpio.PULLUP)

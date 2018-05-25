@@ -1,5 +1,5 @@
 -- Número máximo de pontos de wi-fi
-local maxOfWifiPonts = 3
+local maxOfWifiPonts = 1
 
 -- Função para converter tabela para json string
 function tableToString(t)

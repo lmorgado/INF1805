@@ -1,3 +1,6 @@
+--Caio Gonçalves Feiertag 1510590
+--Leandro Morgado 1212042
+
 local mqtt = require("mqtt_library")
 require "button"
 require "label"

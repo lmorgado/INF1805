@@ -44,6 +44,8 @@ function disconnect()
   activate(vConnect)
   deactivate(vInfo)
   vInfo["client"].name = "Client: nil"
+  vInfo["latitude"].name = "Latitude: nil"
+  vInfo["longitude"].name = "Longitude: nil"
 end
 function errorClose()
   --handler do pressionamento do botao para fechar o erro

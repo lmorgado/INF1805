@@ -1,13 +1,22 @@
+-----------------------------------------------------------------------------------------
+--
+-- wifipoints.lua
+--
+-- Autores: Leandro Morgado
+--          Caio Feiertag
+--
+-- Data da ultima modificacao: 01/julho/2018
+-- 
+-- INF1805: Sistema Reativos. PUC-Rio
+-- 
+-----------------------------------------------------------------------------------------
+
 local wifipoints = {}
 
--- Número máximo de pontos de wi-fi
+---- Numero maximo de pontos de wi-fi
 local _maxOfWifiPonts = 5
 
--- Info p/ nodemcu mqtt-client
-local _client = nil
-local _channel = ""
-local _data = ""
-
+-- Converter tabela em string
 local function _tableToString(t)
   str = '{"wifiPoints":['
   
@@ -32,7 +41,8 @@ local function _tableToString(t)
   return str .. ']}'
 end
 
-local function _listap(t) 
+---- Callback sucesso recebe os pontos de wifi encontrados
+local function _listap(t)
   body = {}
   body["wifiAccessPoints"] = {}   
   
@@ -42,14 +52,13 @@ local function _listap(t)
     table.insert(body.wifiAccessPoints, this_m)
   end
   
-  if table.getn(body["wifiAccessPoints"]) > 0 then
-    _data = _tableToString(body["wifiAccessPoints"])
-    _client:publish(_channel, _data, 0, 0)
-  else
-    wifi.sta.getap(1, _listap)
-  end 
+  local data = _tableToString(body["wifiAccessPoints"])
+  
+  -- publica pontos de wifi em dado canal
+  _client:publish(_channel, data, 0, 0)
 end
 
+---- Rastrear/publicar pontos de wifi proximos
 function wifipoints.publish_on_channel(client, channel)
   _client = client
   _channel = channel

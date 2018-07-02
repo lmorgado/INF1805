@@ -1,3 +1,16 @@
+-----------------------------------------------------------------------------------------
+--
+-- ui.lua
+--
+-- Autores: Leandro Morgado
+--          Caio Feiertag
+--
+-- Data da ultima modificacao: 01/julho/2018
+-- 
+-- INF1805: Sistema Reativos. PUC-Rio
+-- 
+-----------------------------------------------------------------------------------------
+
 local widget = require 'widget'
 local slideView = require 'libs.slide_view'
 
@@ -14,8 +27,10 @@ function Ui:create()
    	return ui
 end
 
+---- Criar um text-label com quebra de linha (multiplas linhas)
 function Ui:text(x, y, text)	
-	local width = 0.9 * self.viewableScreenW
+	-- extensao do texto setada
+    local width = 0.9 * self.viewableScreenW
 	local txt = display.newText(text, x, y, width, 0, native.systemFont, 12)
 	txt:setFillColor(0, 0.5, 1)
 	txt.anchorX = 0
@@ -23,12 +38,14 @@ function Ui:text(x, y, text)
 	return txt
 end
 
+---- Criar uma barra de progresso default
 function Ui:progressView(x, y, length)
 	local options = {left = x, top = y, width = length, isAnimated = true}
 	local progView = widget.newProgressView(options)
 	return progView
 end
 
+---- Criar uma barra ("tab bar") com 3 botoes
 function Ui:tabBar(handle_map, handle_street, handle_info)
 	local f1 = {x = 4, y = 0, width = 24, height = 120}
 	local f2 = {x = 32, y = 0, width = 40, height = 120}
@@ -92,6 +109,7 @@ function Ui:tabBar(handle_map, handle_street, handle_info)
 	return tabBar
 end
 
+---- Criar uma imagem setada no centro da tela
 function Ui:image(width, height, filename)
 	local image = display.newImageRect(filename, system.DocumentsDirectory, width, height)
     image.x = self.screenW / 2
@@ -99,6 +117,7 @@ function Ui:image(width, height, filename)
     return image
 end
 
+---- Criar um carrossel de imagens
 function Ui:slideView(images)
 	local sldView = slideView.new(images, nil)
 	return sldView

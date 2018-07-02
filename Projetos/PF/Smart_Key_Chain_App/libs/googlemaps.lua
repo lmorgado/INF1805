@@ -1,6 +1,22 @@
-
-
-local googlemaps = { }
+-----------------------------------------------------------------------------------------
+--
+-- googlemaps.lua
+--
+-- Adaptada e estendia para o sdk Corona
+-- 
+-- * Referencia 1: https://github.com/ludc/googlemaps
+-- 
+-- * Referencia 2: https://developers.google.com/maps/documentation/
+--
+-- Autores: Ludovic Denoyer (modulo original) - University Pierre et Marie Curie
+--          Leandro Morgado
+--          Caio Feiertag
+-- 
+-- Ultima modificacao: 01/julho/2018
+-- 
+-- INF1805: Sistema Reativos. PUC-Rio
+-- 
+-----------------------------------------------------------------------------------------
 
 require 'plugin.openssl'
 local https = require 'plugin_luasec_https'
@@ -8,16 +24,20 @@ local bit = require 'plugin.bit'
 local ltn12 = require 'ltn12'
 local json = require 'json'
 
+local googlemaps = {}
 
 
+---- Get location: (latitude, longitude)
+--@params request_body string with the wifi points
+--@params key the google api key
 function googlemaps.geolocation(request_body, key)
   
   url = "https://www.googleapis.com/geolocation/v1/geolocate?key="
   url = url..key
 
-  local response_body = { }
+  local response_body = {}
 
-  local r, c, h, s = https.request {                                                                                                                                                                               
+  local r, c, h, s = https.request {                                                                                                                                                                            
     url = url,                                                                                                                                     
     method = 'POST',                                                                                                                                                           
     headers = {                                                                                                                                                       
@@ -37,9 +57,7 @@ function googlemaps.geolocation(request_body, key)
   return resp_table
 end
 
-
-
-
+---- Get location adress
 function googlemaps.address(latitude, longitude, key)
   
   local url = "https://maps.googleapis.com/maps/api/geocode/json?"
@@ -64,15 +82,13 @@ function googlemaps.address(latitude, longitude, key)
   return resp_table
 end
 
-
-
-
+---- Get info about timezone
 function googlemaps.timezone(latitude, longitude, timestamp, key)
   
   local url = "https://maps.googleapis.com/maps/api/timezone/json?"
   url = url.."location="..latitude..","..longitude.."&timestamp="..timestamp.."&key="..key
 
-  local response_body = { }
+  local response_body = {}
    
   local r, c, h, status = https.request {
     url = url,
@@ -91,21 +107,18 @@ function googlemaps.timezone(latitude, longitude, timestamp, key)
   return resp_table
 end
 
-
- ------------------
- -- This function returns the json corresponding to a direction from 'origin' to 'destination' using the google directions API
+ --- This function returns the json corresponding to a direction from 'origin' to 'destination' using the google directions API
  --@params origin the start point (lat,long as a string, or an address)
  --@params destination the final point (lat,long as a string, or an address)
  --@params mode the mode (e.g "driving")
  --@params key the google api key
  --@return the corresponding json
- 
- function googlemaps.direction(origin, destination, mode, key)
+function googlemaps.direction(origin, destination, mode, key)
    
   local url = "https://maps.googleapis.com/maps/api/directions/json?"
   url = url.."origin="..origin.."&destination="..destination.."&mode="..mode.."&key="..key
 
-  local resp = { }
+  local resp = {}
    
   local result, content, h, statuscode = https.request {
     url = url,
@@ -124,16 +137,15 @@ end
   return(j)
 end
 
-
---- encode a sequence of points to a polyline_str
---- each point is point.lat and point.lng
+--- Encode a sequence of points to a polyline_str
+--@params each point is point.lat and point.lng
 function googlemaps.encode_polyline(points)
   
   local function _split_into_chunks(value)
-    local chunks = { }
+    local chunks = {}
     local pos = 1
     while(value >= 32) do
-        chunks[pos] = bit.bor(bit.band(value,31), 0x20 )
+        chunks[pos] = bit.bor(bit.band(value,31), 0x20)
         pos = pos + 1
         value = bit.rshift(value, 5)
     end
@@ -151,7 +163,7 @@ function googlemaps.encode_polyline(points)
     local chunks = _split_into_chunks(value)
     
     local retour = ""
-    for _,v in ipairs(chunks) do
+    for _, v in ipairs(chunks) do
       retour = retour..string.char(v + 63)
     end
     return retour
@@ -162,7 +174,7 @@ function googlemaps.encode_polyline(points)
   local prev_lat = 0
   local prev_lng = 0
     
-    for k,p in ipairs(points) do        
+    for k, p in ipairs(points) do        
         local lat = math.floor(p.lat * 1e5)
         local lng = math.floor(p.lng * 1e5)
         
@@ -179,29 +191,26 @@ function googlemaps.encode_polyline(points)
     return result
 end
 
-
 ---- Assemble multiple polylines (as string) to one single polyline (as string)
 function googlemaps.assemble_polylines(tab_polylines)
 
-  local decoded = { }  
+  local decoded = {}  
   for k,v in ipairs(tab_polylines) do    
     decoded[k] = googlemaps.decode_polyline(v)
   end  
   
-  local allpoints = { }; local idx = 1
+  local allpoints = {}; local idx = 1
   for k, v in ipairs(decoded) do
     for k2, v2 in ipairs(v) do      
       allpoints[idx] = v2
-      idx = idx+1
+      idx = idx + 1
     end
   end
   
   return googlemaps.encode_polyline(allpoints)
 end
 
-  
-----------------------
--- This function save a PNG file corresponding to a map
+---- This function save a PNG file corresponding to a map
 --@params size a string corresponding to the size of the image e.g 640x480
 --@params filename the name of the output file
 --@params markers a set of points (each point is point.lat, point.lng
@@ -228,7 +237,7 @@ function googlemaps.save_map(size, polyline_str, markers, filename, key)
   
   url = url.."&key="..key
   
-  local resp = { }
+  local resp = {}
   
   local result, content, h, statuscode = https.request {
     url = url,
@@ -251,14 +260,12 @@ function googlemaps.save_map(size, polyline_str, markers, filename, key)
   else
     file:write(answer)
     file:close()   
-end
+  end
+  
   file = nil 
 end  
 
-
------
--- This function compute the heading (in degree between 0 and 360) given one start_position and one end_position).
--- @parals 
+---- This function compute the heading (in degree between 0 and 360) given one start_position and one end_position)
 function googlemaps.compute_heading(start_position_latitude,start_position_longitude,end_position_latitude,end_position_longitude)
     
     local lat1 = start_position_latitude
@@ -281,7 +288,6 @@ function googlemaps.compute_heading(start_position_latitude,start_position_longi
     return brng
 end
 
-
 ---- This function computes the distance in meters between two points
 function googlemaps.distance_on_earth(lat1, long1, lat2, long2)  
   
@@ -299,14 +305,13 @@ function googlemaps.distance_on_earth(lat1, long1, lat2, long2)
   return distance_on_unit_sphere(lat1, long1, lat2, long2) * 6378137
 end
 
-
 ---- This function decodes a polyline string and returns a list of points
 function googlemaps.decode_polyline(polyline_str)
     
     local index, lat, lng = 1, 0, 0
-    local coordinates = { }
+    local coordinates = {}
     local pos = 1
-    local changes = { }
+    local changes = {}
     changes.latitude = 0
     changes.longitude = 0
 
@@ -356,14 +361,13 @@ function googlemaps.decode_polyline(polyline_str)
         lat = lat + changes.latitude
         lng = lng + changes.longitude
         
-        coordinates[pos] = { }
+        coordinates[pos] = {}
           coordinates[pos].lat = lat / 100000.0
           coordinates[pos].lng = lng / 100000.0
         pos = pos + 1
     end
     return coordinates
   end
-
 
 ---- Save a google street view image
 ---@params lat,long = latitude and longitude of the point
@@ -379,7 +383,7 @@ function googlemaps.capture_street_view(lat, long, heading, size, filename, key)
   url = url.."&heading="..heading  
   url = url.."&key="..key
   
-  local resp = { }
+  local resp = {}
   
   local result, content, h, statuscode = https.request {
     url = url,
@@ -402,18 +406,17 @@ function googlemaps.capture_street_view(lat, long, heading, size, filename, key)
   else
     file:write(answer)
     file:close()
-end
+  end
+  
   file = nil 
 end  
 
-
-
---- Returns the closest point on an existing road using the google Roads API
+---- Returns the closest point on an existing road using the google Roads API
 function googlemaps.get_point_on_road(lat, lng, key)
   
   local url = "https://roads.googleapis.com/v1/snapToRoads?path="..lat..","..lng.."&key="..key
   
-   local resp = { }
+   local resp = {}
    
    local result, content, h, statuscode = https.request {
     url = url,
@@ -431,7 +434,7 @@ function googlemaps.get_point_on_road(lat, lng, key)
   
   local j = json.decode(answer)
   
-  local retour = { }
+  local retour = {}
   
   if (j.snappedPoints == nil) then 
     retour.lat = lat 
@@ -444,6 +447,5 @@ function googlemaps.get_point_on_road(lat, lng, key)
   
   return retour
 end
-
 
 return googlemaps
